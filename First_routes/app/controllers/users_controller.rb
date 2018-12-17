@@ -23,18 +23,22 @@ class UsersController < ApplicationController
 
    def update
         user = User.update(params[:id], user_params)
-        redirect_to users_url
+        if user.valid?
+            render plain: 'User info updated'
+        else
+            render json: user.errors.full_messages, status: 422
+        end
    end
 
    def destroy
     user = User.find_by(id: params[:id])
     user.destroy
-    redirect_to users_url   
+    render json: user   
    end
 
    private
 
    def user_params
-    params.require(:user).permit(:name, :email)
+    params.require(:user).permit(:username)
    end
 end
